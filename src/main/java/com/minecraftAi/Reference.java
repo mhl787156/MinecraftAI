@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.minecraftAi;
 
 /**
  * Created by Mickey on 25/03/2016.
