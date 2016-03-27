@@ -1,0 +1,48 @@
+<agent-world width="115" height="120" best-fitness="160">
+	<agent-position x="5" y="115"/>
+
+	<goal x="5.0" y="5.0"/>
+
+	<obstacle>
+		<start x="0" y="25"/>
+		<finish x="30" y="30"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="0" y="45"/>
+		<finish x="20" y="70"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="30" y="30"/>
+		<finish x="30" y="90"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="30" y="30"/>
+		<finish x="30" y="90"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="30" y="30"/>
+		<finish x="80" y="15"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="30" y="60"/>
+		<finish x="95" y="95"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="45" y="120"/>
+		<finish x="65" y="100"/>
+	</obstacle>
+
+	<obstacle>
+		<start x="50" y="55"/>
+		<finish x="115" y="85"/>
+	</obstacle>
+
+
+
+</agent-world>

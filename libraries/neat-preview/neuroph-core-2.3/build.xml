@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="neuroph" default="all" basedir=".">
+
+	<!-- load the version information -->
+	<property file="${basedir}/version.properties"/>
+
+	<!-- the location of the source code to compile -->
+	<property name="src.dir" value="${basedir}/src"/>
+
+	<!-- the location of all compiled code -->
+	<property name="build.dir" value="${basedir}/bin"/>
+
+	<!-- the name of the jar file to generate -->
+	<property name="jar.file" value="${release.name}-${release.version}.jar"/>
+
+	<!-- the required libraries of the neuroph codebase -->
+	<property name="classpath" value=""/>
+
+	<!-- the name of the directory to store the javadocs in -->
+	<property name="javadoc.dir" value="${basedir}/javadoc"/>
+
+        <!--
+            Build sources
+        -->
+        <target name="build">
+             <mkdir dir="${build.dir}"/>
+
+            <javac srcdir="${src.dir}" destdir="${build.dir}" fork="yes">
+              <classpath>
+                    <pathelement path="${classpath}"/>
+              </classpath>
+            </javac>
+        </target>
+
+        <!--
+            jars the compiled code from ${build.dir} into ${jar.file}
+        -->
+        <target name="jar" depends="build" description="Create jar">
+            <jar destfile="${jar.file}" basedir="${build.dir}" includes="**/*.class"/>
+        </target>
+
+        <!--
+            delete all generated files and dirs
+        -->
+        <target name="clean">
+              <delete dir="${build.dir}" />
+              <delete dir="${javadoc.dir}"/>
+              <delete file="${jar.file}"/>
+        </target>
+
+        <!--
+            generate the javadoc
+        -->
+        <target name="javadoc">
+            <javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" verbose="true">
+                  <classpath>
+                    <pathelement path="${classpath}"/>
+                  </classpath>
+            </javadoc>
+        </target>
+
+      <target name="all" depends="jar, javadoc" />
+           
+      <target name="help" description="Display help information on how to build">
+            <echo>Apache Ant build tool for Neuroph Library
+                Usage:
+                ant help
+                ant build
+                ant jar
+                ant clean
+                ant javadoc
+                ant all
+            </echo>
+      </target>
+
+</project>

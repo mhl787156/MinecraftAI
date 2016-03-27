@@ -1,0 +1,15 @@
+org.neuroph.contrib.neat.experiment.multiplication
+org.neuroph.contrib.neat.experiment.xor
+org.neuroph.contrib.neat.gen
+org.neuroph.contrib.neat.gen.impl
+org.neuroph.contrib.neat.gen.operations
+org.neuroph.contrib.neat.gen.operations.fitness
+org.neuroph.contrib.neat.gen.operations.mutation
+org.neuroph.contrib.neat.gen.operations.reproduction
+org.neuroph.contrib.neat.gen.operations.selector
+org.neuroph.contrib.neat.gen.operations.speciator
+org.neuroph.contrib.neat.gen.persistence
+org.neuroph.contrib.neat.gen.persistence.impl
+org.neuroph.contrib.neat.gen.persistence.impl.serialize
+org.neuroph.contrib.neat.gen.persistence.impl.xstream
+org.neuroph.contrib.neat.gen.util

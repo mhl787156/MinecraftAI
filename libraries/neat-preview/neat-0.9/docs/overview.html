@@ -1,0 +1,194 @@
+<html>
+<head>
+	<title>Overview of NEAT-Contrib</title>
+	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+	
+</head>
+<body>
+<h1>WHAT IS NEAT?</h1>
+
+<p>
+NEAT stands for "Neural Evolution of Augmeted Topologies", it is a
+Genetic Algorithm for the evolution of Artificial Neural Networks (ANN)
+developed by Ken Stanley. 
+</p>
+<p>Conventionally, neural network topology is
+chosen by a human experimenter, and a genetic algorithm is used to
+select effective connection weights. The topology of such a network
+stays constant throughout this weight selection process. <br><br>The NEAT
+approach begins with a perceptron-like feed-forward network of only
+input and output neurons. As evolution progresses, the topology of the
+network may be augmented by either adding a neuron along an existing
+connection, or by adding a new connection between previously unconnected
+neurons. </p>
+<p>
+More details about NEAT can be found in Ken Stanley's original
+NEAT paper located at:
+http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf <br><br>The Neuroph
+implementation of NEAT (NEAT-Contrib) aims to recreate the same
+algorithm as defined by Ken Stanley using the Neuroph library as the
+Neural Network implementation. The design of NEAT-Contrib is influenced
+by another implementation of NEAT, ANJI (anji.sourceforge.net), but aims
+to remain true to the original Stanley implementation of NEAT.
+</p>
+<h1>HOW DOES IT WORK?</h1>
+<p>
+NEAT follows a similar approach to other genetic algorithms, the only difference being that a Chromosome 
+(in NEAT-Contrib kown as an <code>Organism</code>) contains either <code>ConnectionGene</code> or <code>NeuronGene</code>s.
+</p>
+<p>The evolution process works follwing this psueudo code:</p>
+<pre>
+	WHILE THE EXIT CRITERIA IS NOT MET
+		DETERMINE FITNESS FOR CURRENT GENERATION
+		SELECT ORGANISMS FOR NEXT GENERATION
+		REPRODUCE ORGANISMS UNTIL POPULATION SIZE IS MET
+		MUTATE ORGANISMS
+	END-WHILE
+</pre>
+
+<p>The basic loop construct is implemented by the <code>org.neuroph.contrib.neat.gen.Evolver</code> class.</p>
+
+<p>Each step of the above pseudo-code corresponds to a seperate interface in NEAT-Contrib:</p>
+<h3>Selection</h3>
+<p>Selection is provided via the <code>org.neuroph.contrib.neat.gen.operations.OrganismSelector</code> interface. NEAT-Contrib
+provides one organism selector.</p>
+<h4>org.neuroph.contrib.neat.gen.operations.selector.NaturalSelectionOrganismSelector</h4>
+<p  class="indented">
+The Natural Selection selector works by ensuring that the most "fit" <code>Organism</code> in each <code>Specie</code> is
+preserved between generations (if elitism is turned on). It then will continue to select from the remaining <code>Organism</code>s
+in order of fitness until the <code>survivalRatio</code> has been met. </p>  
+
+<h3>Reproduction</h3>
+<p>
+Reproduction is implemented in subclasses of <code>org.neuroph.contrib.neat.gen.operations.ReproductionOperator</code>.
+NEAT-Contrib provides two implementations of the <code>ReproductionOperator</code> as used in the Stanley-NEAT implementation:</p>
+<h4>org.neuroph.contrib.neat.gen.operations.reproduction.CrossoverReproductionOperator</h4>
+<p class="indented">This reprodction operator will select two "parent" <code>Organism</code>s at random and then create a new "offspring" by
+randomly splicing the parent <code>Organism</code>s gene's together.</p>
+
+<h4>org.neuroph.contrib.neat.gen.operations.reproduction.CloneReproductionOperator</h4>
+<p class="indented">This reproduction operator will select a "parent" <code>Organism</code> at random and create an exact copy of it.</p>  
+<h3>Mutation</h3>
+<p>Mutation is implemented in sublclasses of <code>org.neuroph.contrib.neat.gen.operations.MutationOperator</code> and is 
+where the bulk of the interesting work of NEAT is performed.</p> 
+
+<p>Each mutation operation is assigned a <code>mutationProbability</code>
+that will determine how frequently the mutation is performed. These values are initialised to the default values used in
+Stanley-NEAT, however they can be modified to suit a specific experiment's needs.</p>
+
+<h4>org.neuroph.contrib.neat.gen.operations.mutation.AddConnectionMutationOperation</h4>
+<p class="indented">The add connection operation will randomly select two <code>NeuronGene</code>s and create a connection between them
+(as long as no connection already exists, and the two neuron's are not input or output neurons).</p>  		
+
+<h4>org.neuroph.contrib.neat.gen.operations.mutation.AddNeuronMutationOperation</h4>
+<p class="indented">The add neuron operation will randomly select a <code>ConnectionGene</code> in the <code>Organism</code> and split it 
+into two connections, inserting a new <code>NeuronGene</code> in-between.</p> 
+
+<h4>org.neuroph.contrib.neat.gen.operations.mutation.WeightMutationOperation</h4>
+<p class="indented">The weight mutation operation will randomly select a <code>ConnectionGene</code> and adjust it's weight.</p>
+<h1>CREATING AN EXPERIMENT IN NEAT-Contrib</h1>
+
+<h3>FitnessFunction</h3>
+To create a basic experiment in NEAT-Contrib a developer needs to design
+a suitable fitness function for evaluating the "fitness" of a particular
+ANN. This fitness function is provided to NEAT-Contrib by implementing
+the <br><br><code>org.neuroph.contrib.neat.gen.operations.FitnessFunction</code> interface.
+
+<br><br>This interface defines one method:
+<br><br><code>public void evaluate(List &lt;OrganismFitnessScore&gt; fitnesses)</code>
+. <br><br>To implement the evaluate method the developer must compute the
+"fitness" score for each of the OrganismFitnessScore's provided. <br><br>For
+example:
+<br><pre><code> 
+public void evaluate(List&lt;OrganismFitnessScore&gt; fitnesses) { 
+	for(OrganismFitnessScore ofs : fitnesses) { 
+		Organism o = ofs.getOrganism(); 
+		NeuralNetwork net = ofs.getNeuralNetwork(); 
+		double fitness = calculateNetworkFitness(net);
+
+		ofs.setFitness(fitness); 
+	}
+ } 
+</code></pre>
+ 
+The above code sample shows in the simplest form a Fitness Function can be defined. It is important to remember to set
+the fitness score on the <code>OrganismFitnessScore</code> to make sure that this value is used for evaluation in the next 
+generation.
+
+<h3>NeatParameters</h3>
+Once a suitable <code>FitnessFunction</code> has been defined the developer needs to define the environment in which
+the evolutionary process is to be performed. This is typically done by providing an implementation of the 
+<code>org.neuroph.contrib.neat.gen.NeatParameters</code> interface.
+
+<br><br>For most usages the <code>org.neuroph.contrib.neat.gen.impl.SimpleNeatParameters</code> will suffice.
+<br><br>For example:
+<code>
+<pre>
+		SimpleNeatParameters params = new SimpleNeatParameters();
+		params.setFitnessFunction(new ExampleFitnessFunction());
+		params.setPopulationSize(150);
+		params.setMaximumFitness(1000);
+		params.setMaximumGenerations(100);
+</pre>
+</code>
+<br>The code sample above shows the basic configuration of a <code>SimpleNeatParameters</code> instance. The developer must
+specify a population size and the fitness function at a minimum. It is recommended that a <code>maximum fitness</code> or
+<code>maximum generations</code> is specified to ensure that the evolutionary process has a termination condition.
+
+<br><br>Alternatively you can implement the <code>org.neuroph.contrib.neat.gen.NeatParameters</code> interface  
+(or extend <code>SimpleNeatParameters</code>) yourself and write a custom handler for the 
+<code>public boolean exitCriteriaMet(int generationNumber, double bestFitness)</code> that captures your exit criteria.
+
+<h3>Evolver</h3>
+The last step involved in using NEAT-Contrib is to create a <code>org.neuroph.contrib.neat.gen.Evolver</code> and define the 
+initial network layout you wish to use.
+
+<br><br>The constructor for the Evolver requires an instance of <code>NeatParameters</code> and the input and output
+<code>NeuronGene</code>s you wish to use.
+<br><br><code>public Evolver(NeatParameters params, List&lt;NeuronGene&gt; inputLayer, List&lt;NeuronGene&gt; outputLayer)</code>
+<br><br>For example:
+<br><br>
+<code><pre>
+		NeuronGene inputOne = new NeuronGene(NeuronType.INPUT, params);
+		NeuronGene inputTwo = new NeuronGene(NeuronType.INPUT, params);
+		NeuronGene output = new NeuronGene(NeuronType.OUTPUT, params);
+		
+		Evolver e = Evolver.createNew(params, Arrays.asList(inputOne, inputTwo), Arrays.asList(output));
+		Organism best = e.evolve();
+</pre></code>
+<br><br>
+With an <code>Evolver</code> defined it is a simple matter of calling the <code>evolve()</code> method which will terminate
+when the <code>exitCriteriaMet</code> of the <code>NeatParameters</code> returns true. Upon completion the <code>evolve()</code> 
+method will return the best <code>Organism</code> the NEAT algorithm found.
+<br><br>
+You can also resume a previous evolution process from where it last checkpointed by using the <code>Evolver.loadFromPersistence()</code>
+factory method. This requires the use of a seperate <code>Persistence</code> instance than the one provided
+in <code>SimpleNeatParameters</code>, as the default <code>Persistence</code> instance is a NO-OP (i.e. it does nothing). Alternative
+<code>Persistence</code> implementations are:
+<ul>
+	<li> XStream (XML) - </li>
+	<li> Hibernate (Database) - </li>
+	<li> Java Object Serialization (Binary; same as Neuroph) - </li>  
+</ul>
+
+
+
+
+<br><br>
+To convert the best organism back into a <code>NeuralNetwork</code> you can simply use the <code>NeuralNetworkBuilder</code>
+you provided in the <code>NeatParameters</code> instance.
+
+<code>
+<pre>
+		NeatParameters params = ....
+		// other code ommitted.
+		
+		Organism best = evolver.evolve();
+		org.neuroph.core.NeuralNetwork nn = params.getNeuralNetworkBuilder().createNeuralNetwork(best);
+</pre>
+</code>
+<br>You now have a <code>org.neuroph.core.NeuralNetwork</code> to do whatever you would like with.
+
+<br><br></body>
+</html>
+

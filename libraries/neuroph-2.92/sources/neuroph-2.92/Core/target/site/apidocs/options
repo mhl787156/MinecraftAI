@@ -1,0 +1,24 @@
+-classpath
+'/home/zoran/.m2/repository/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar:/home/zoran/.m2/repository/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar:/home/zoran/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:/home/zoran/.m2/repository/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/media/zoran/Data/NeurophWorkspace/neurophTrunk/neuroph_git/neuroph-2.9/Core/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2015. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/media/zoran/Data/NeurophWorkspace/neurophTrunk/neuroph_git/neuroph-2.9/Core/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Core 2.92 API'
+-linkoffline
+'http://docs.oracle.com/javase/8/docs/api' '/media/zoran/Data/NeurophWorkspace/neurophTrunk/neuroph_git/neuroph-2.9/Core/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Core 2.92 API'

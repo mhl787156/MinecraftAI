@@ -1,0 +1,35 @@
+NOTES FOR RELEASE 0.0.1 OF neuroph-contrib/NEAT
+
+* Elitism is performed on a 1 per Species basis, the original NEAT c++ implementation
+  appears to use 1 elite chromosome per generation, however this is not how any
+  other implementation of NEAT appears to work.
+
+* Currently only use Sigmoid activation functions, this should be tuned to allow any
+  activation function to be used. The original NEAT C++ implementation uses only 
+  sigmoid activation, however a lot of other implementations (including the CPPN for
+  HyperNEAT) require the ability to change neuron types. 
+
+* Currently no handling or detection of recurrent links. This should be a tunable parameter
+  which is dealt with as part of the crossover and add connection mutation operators.
+  
+THINGS I WOULD LIKE TO ADD BEFORE FINAL RELEASE:
+
+* Fitness is currently a Double. To increase the flexibility I would like to swap this 
+  out for an appropriate interface (which implements Comparable), that way the user
+  can specify a fitness value that is not tied to an individual value (sounds strange, but I
+  actually need to be able to do this).
+    
+* Add a factory implementation for instantiating all of the objects used (except Evolver), this
+  again allows the user to customise the code as much as they need to. This of course means extracting
+  interfaces for the Specie, Organism, NeuronGene and ConnectionGene classes.
+  
+* The LRU cache used by FitnessScores is terribly inefficient and really needs some more work done on it. After
+  a few hundred generations, even with a small number of generations you start to notice the bad performance
+  of the LRU implementation. This needs some serious research provided, otherwise the memory requirements of 
+  the NEAT implementation go through the roof. Currently the LRU cache is storing a Long and a Double (the organism
+  ID and the fitness score it has), I don't think you can compact this much more, however when you have 300 chromosomes
+  with 1000 generations thats 300000 entries * 2, which is quite a lot of memory. Currently the XOR runs within the
+  default allocated amount of VM space, however for more complicated usages this could become quite a problem.   
+  
+* Write some more unit tests. Unfortunately given the very random nature of NEAT this is going to be
+  difficult. Currently there is only a test case for the SimpleSpeciator.        

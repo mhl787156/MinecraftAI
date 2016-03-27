@@ -23,6 +23,9 @@ http://jabelarminecraft.blogspot.co.uk/
 The Minecraft Official Wikipedia
 http://minecraft.gamepedia.com/Minecraft_Wiki
 
+Neuroph with NEAT
+https://sourceforge.net/projects/neuroph/files/NEAT-preview/
+
 
 -------------------------------------------
 Source installation information for modders
