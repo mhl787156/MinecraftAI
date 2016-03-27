@@ -17,13 +17,26 @@ public class RunAiCommand extends AbstractCommand {
 
     @Override
     public String getCommandUsage(ICommandSender iCommandSender) {
-        return "\\runAI: -train <action>\n" +
-                "action: tree" ;
+        return "\\runAI: -train <action>, action: 'gatherwood'" ;
     }
 
     @Override
     public void ProcessPlayer(EntityPlayer player, String[] params) {
-        player.addChatMessage(new ChatComponentText("WHY HELLO THERE!"));
+        if(params.length == 0) {
+            player.addChatMessage(new ChatComponentText("No parameters"));
+        }
+        int i = 0;
+        while(i < params.length){
+            switch (params[i]){
+                case "-train":
+                    i++;
+                    player.addChatMessage(new ChatComponentText("Training " + params[i]));
+                    break;
+                default:
+                    player.addChatMessage(new ChatComponentText("Not a recognised command"));
+
+            }
+        }
     }
 
     @Override
